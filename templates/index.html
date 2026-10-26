@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabBook | Laboratory Booking</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <a class="brand" href="/">
+            <span class="brand-icon"><i class="fa-solid fa-flask"></i></span>
+            <span><strong>LabBook</strong><small>Book · Learn · Create</small></span>
+        </a>
+
+        <nav class="side-nav">
+            <a class="nav-link active" href="/"><i class="fa-solid fa-house"></i> Home</a>
+            <a class="nav-link" href="/labs"><i class="fa-solid fa-flask"></i> Laboratories</a>
+            <a class="nav-link" href="/book"><i class="fa-regular fa-calendar-check"></i> Book a Lab</a>
+            <a class="nav-link" href="/bookings"><i class="fa-regular fa-clipboard"></i> My Bookings</a>
+            <a class="nav-link" href="/admin"><i class="fa-solid fa-shield-halved"></i> Admin Dashboard</a>
+        </nav>
+
+        <div class="sidebar-quote">
+            <i class="fa-solid fa-quote-left"></i>
+            <p>Better tools for brighter minds.</p>
+        </div>
+    </aside>
+
+    <main class="main-area">
+        <header class="topbar">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="labSearch" type="search" placeholder="Search laboratories...">
+            </div>
+            <div class="profile">
+                <span class="notification"><i class="fa-regular fa-bell"></i></span>
+                <span class="avatar"><i class="fa-solid fa-user"></i></span>
+                <span><strong>Hi, Student</strong><small>Welcome back!</small></span>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <section class="hero">
+                <div class="hero-copy">
+                    <span class="eyebrow">WELCOME TO YOUR LAB SPACE</span>
+                    <h1>Online Laboratory<br>Booking System</h1>
+                    <p>Book your preferred laboratory, choose a time slot, and get started with your research and learning.</p>
+                    <a class="primary-button" href="/book">
+                        <i class="fa-regular fa-calendar"></i> Book a Lab <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="hero-art">
+                    <div class="art-circle"></div>
+                    <i class="fa-solid fa-microscope microscope"></i>
+                    <i class="fa-solid fa-flask flask-one"></i>
+                    <i class="fa-solid fa-vials flask-two"></i>
+                    <span class="art-spark spark-one">✦</span>
+                    <span class="art-spark spark-two">✧</span>
+                </div>
+            </section>
+
+            <section class="stats-grid">
+                <article class="stat-card">
+                    <span class="stat-icon purple"><i class="fa-solid fa-flask"></i></span>
+                    <p>Total Laboratories</p>
+                    <h2>{{ total_labs }}</h2>
+                    <a href="/labs" aria-label="View laboratories"><i class="fa-solid fa-arrow-right"></i></a>
+                </article>
+                <article class="stat-card">
+                    <span class="stat-icon green"><i class="fa-regular fa-calendar-check"></i></span>
+                    <p>Total Bookings</p>
+                    <h2>{{ total_bookings }}</h2>
+                    <a href="/bookings" aria-label="View bookings"><i class="fa-solid fa-arrow-right"></i></a>
+                </article>
+                <article class="stat-card">
+                    <span class="stat-icon blue"><i class="fa-solid fa-users"></i></span>
+                    <p>Upcoming Bookings</p>
+                    <h2>{{ upcoming_bookings }}</h2>
+                    <a href="/bookings" aria-label="Upcoming bookings"><i class="fa-solid fa-arrow-right"></i></a>
+                </article>
+                <article class="stat-card">
+                    <span class="stat-icon pink"><i class="fa-regular fa-clock"></i></span>
+                    <p>Time Slots</p>
+                    <h2>6</h2>
+                    <a href="/book" aria-label="Book a slot"><i class="fa-solid fa-arrow-right"></i></a>
+                </article>
+            </section>
+
+            <section class="content-grid">
+                <div class="panel laboratories-panel">
+                    <div class="panel-heading">
+                        <div><span class="eyebrow">FIND YOUR SPACE</span><h2>Available Laboratories</h2></div>
+                        <a href="/labs" class="text-link">View all <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+
+                    <div class="lab-grid" id="labGrid">
+                        {% for lab in labs %}
+                        <article class="lab-card" data-name="{{ lab|lower }}">
+                            <div class="lab-image lab-image-{{ loop.index }}">
+                                <i class="fa-solid {{ ['fa-desktop','fa-laptop-code','fa-microchip','fa-atom','fa-flask-vial'][loop.index0] }}"></i>
+                                <span class="lab-number">0{{ loop.index }}</span>
+                            </div>
+                            <div class="lab-card-body">
+                                <h3>{{ lab }}</h3>
+                                <p><i class="fa-solid fa-users"></i> Laboratory facility</p>
+                                <a href="/book" class="small-button">Book Now <i class="fa-solid fa-arrow-right"></i></a>
+                            </div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                    <p id="noResults" class="empty-search" hidden>No matching laboratories found.</p>
+                </div>
+
+                <aside class="panel upcoming-panel">
+                    <div class="panel-heading">
+                        <div><span class="eyebrow">YOUR SCHEDULE</span><h2>Upcoming Bookings</h2></div>
+                    </div>
+                    {% if recent_bookings %}
+                        {% for booking in recent_bookings %}
+                        <div class="booking-item">
+                            <div class="date-tile">
+                                <strong>{{ booking.booking_date[8:10] }}</strong>
+                                <span>{{ booking.booking_date[5:7] }}/{{ booking.booking_date[0:4] }}</span>
+                            </div>
+                            <div class="booking-info">
+                                <h3>{{ booking.lab }}</h3>
+                                <p>{{ booking.slot }}</p>
+                                <span class="status-pill">{{ booking.status }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fa-regular fa-calendar"></i>
+                            <p>No upcoming bookings yet.</p>
+                            <a href="/book">Make your first booking</a>
+                        </div>
+                    {% endif %}
+                    <a href="/bookings" class="outline-button">View All Bookings <i class="fa-solid fa-arrow-right"></i></a>
+                </aside>
+            </section>
+
+            <section class="bottom-banner">
+                <span class="banner-icon"><i class="fa-solid fa-rocket"></i></span>
+                <div><h2>Explore. Learn. Build.</h2><p>Your next breakthrough starts with a great laboratory session.</p></div>
+                <a href="/book" aria-label="Start booking"><i class="fa-solid fa-arrow-right"></i></a>
+            </section>
+
+            <footer>© 2026 LabBook · Innovative Project Learning</footer>
+        </div>
+    </main>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

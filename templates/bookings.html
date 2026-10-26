@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings | LabBook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="app-layout">
+    <aside class="sidebar">
+        <a href="/" class="brand"><i class="fa-solid fa-flask"></i> LabBook</a>
+        <p class="nav-label">WORKSPACE</p>
+        <nav>
+            <a href="/"><i class="fa-solid fa-house"></i> Dashboard</a>
+            <a href="/labs"><i class="fa-solid fa-flask"></i> Laboratories</a>
+            <a href="/book"><i class="fa-regular fa-calendar-check"></i> Book a Lab</a>
+            <a href="/bookings" class="active"><i class="fa-solid fa-list-check"></i> My Bookings</a>
+            <a href="/admin"><i class="fa-solid fa-chart-line"></i> Admin Dashboard</a>
+        </nav>
+        <div class="sidebar-bottom">Smart Laboratory<br>Management System</div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div><span class="eyebrow">RESERVATIONS</span><h1>My Bookings</h1></div>
+            <a href="/book" class="primary-btn"><i class="fa-solid fa-plus"></i> New Booking</a>
+        </header>
+
+        <section class="page-intro">
+            <h2>Booking Records</h2>
+            <p>View the laboratory sessions reserved through the system.</p>
+        </section>
+
+        <section class="table-card">
+            {% if bookings %}
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Student</th>
+                            <th>Laboratory</th>
+                            <th>Date</th>
+                            <th>Time Slot</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in bookings %}
+                        <tr>
+                            <td>#{{ b.id }}</td>
+                            <td>
+                                <strong>{{ b.name }}</strong>
+                                <small class="email-text">{{ b.email }}</small>
+                            </td>
+                            <td>{{ b.lab }}</td>
+                            <td>{{ b.booking_date }}</td>
+                            <td>{{ b.slot }}</td>
+                            <td><span class="status-pill"><span></span>{{ b.status }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="lab-icon"><i class="fa-regular fa-calendar-xmark"></i></div>
+                <h2>No bookings yet</h2>
+                <p>Your laboratory reservations will appear here after you book a session.</p>
+                <a href="/book" class="primary-btn">Book Your First Lab</a>
+            </div>
+            {% endif %}
+        </section>
+    </main>
+</div>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

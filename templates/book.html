@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Lab | LabBook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="app-layout">
+    <aside class="sidebar">
+        <a href="/" class="brand"><i class="fa-solid fa-flask"></i> LabBook</a>
+        <p class="nav-label">WORKSPACE</p>
+        <nav>
+            <a href="/"><i class="fa-solid fa-house"></i> Dashboard</a>
+            <a href="/labs"><i class="fa-solid fa-flask"></i> Laboratories</a>
+            <a href="/book" class="active"><i class="fa-regular fa-calendar-check"></i> Book a Lab</a>
+            <a href="/bookings"><i class="fa-solid fa-list-check"></i> My Bookings</a>
+            <a href="/admin"><i class="fa-solid fa-chart-line"></i> Admin Dashboard</a>
+        </nav>
+        <div class="sidebar-bottom">Smart Laboratory<br>Management System</div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div><span class="eyebrow">RESERVATIONS</span><h1>Book a Laboratory</h1></div>
+        </header>
+
+        <section class="page-intro">
+            <h2>Reserve Your Lab Session</h2>
+            <p>Fill in your details and choose a laboratory, date, and available time slot.</p>
+        </section>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <section class="form-card">
+            <div class="form-heading">
+                <div class="lab-icon"><i class="fa-regular fa-calendar-check"></i></div>
+                <div><h2>Booking Details</h2><p>Fields marked with * are required.</p></div>
+            </div>
+
+            <form method="POST" action="{{ url_for('book') }}">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Student / Faculty Name *</label>
+                        <input id="name" type="text" name="name" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input id="email" type="email" name="email" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lab">Select Laboratory *</label>
+                        <select id="lab" name="lab" required>
+                            {% for lab in labs %}
+                            <option value="{{ lab }}">{{ lab }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date">Booking Date *</label>
+                        <input id="date" type="date" name="date" min="{{ today }}" required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="slot">Preferred Time Slot *</label>
+                        <select id="slot" name="slot" required>
+                            {% for slot in slots %}
+                            <option value="{{ slot }}">{{ slot }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/" class="secondary-btn">Cancel</a>
+                    <button type="submit" class="primary-btn"><i class="fa-solid fa-check"></i> Confirm Booking</button>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | LabBook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="app-layout">
+    <aside class="sidebar">
+        <a href="/" class="brand"><i class="fa-solid fa-flask"></i> LabBook</a>
+        <p class="nav-label">WORKSPACE</p>
+        <nav>
+            <a href="/"><i class="fa-solid fa-house"></i> Dashboard</a>
+            <a href="/labs"><i class="fa-solid fa-flask"></i> Laboratories</a>
+            <a href="/book"><i class="fa-regular fa-calendar-check"></i> Book a Lab</a>
+            <a href="/bookings"><i class="fa-solid fa-list-check"></i> My Bookings</a>
+            <a href="/admin" class="active"><i class="fa-solid fa-chart-line"></i> Admin Dashboard</a>
+        </nav>
+        <div class="sidebar-bottom">Smart Laboratory<br>Management System</div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div>
+                <span class="eyebrow">MANAGEMENT</span>
+                <h1>Admin Dashboard</h1>
+            </div>
+            <a href="/" class="secondary-btn"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+        </header>
+
+        <section class="page-intro">
+            <h2>System Overview</h2>
+            <p>Monitor laboratory bookings and upcoming sessions.</p>
+        </section>
+
+        <section class="stats-grid">
+            <article class="stat-card">
+                <div class="stat-icon blue"><i class="fa-solid fa-calendar-check"></i></div>
+                <p>Total Bookings</p>
+                <h2>{{ total_bookings }}</h2>
+                <span class="stat-note">All recorded reservations</span>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon purple"><i class="fa-solid fa-flask"></i></div>
+                <p>Total Laboratories</p>
+                <h2>{{ total_labs }}</h2>
+                <span class="stat-note">Available in the system</span>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon green"><i class="fa-solid fa-clock"></i></div>
+                <p>Upcoming Bookings</p>
+                <h2>{{ upcoming_bookings|length }}</h2>
+                <span class="stat-note">Today and future sessions</span>
+            </article>
+        </section>
+
+        <section class="table-card admin-table">
+            <div class="section-heading">
+                <div><h2>Upcoming Reservations</h2><p>Scheduled laboratory sessions</p></div>
+                <a href="/bookings" class="card-link">All bookings <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            {% if upcoming_bookings %}
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Student</th>
+                            <th>Laboratory</th>
+                            <th>Date</th>
+                            <th>Time Slot</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in upcoming_bookings %}
+                        <tr>
+                            <td>#{{ b.id }}</td>
+                            <td>{{ b.name }}</td>
+                            <td>{{ b.lab }}</td>
+                            <td>{{ b.booking_date }}</td>
+                            <td>{{ b.slot }}</td>
+                            <td><span class="status-pill"><span></span>{{ b.status }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="lab-icon"><i class="fa-regular fa-calendar"></i></div>
+                <h2>No upcoming reservations</h2>
+                <p>New bookings will appear here.</p>
+                <a href="/book" class="primary-btn">Create a Booking</a>
+            </div>
+            {% endif %}
+        </section>
+    </main>
+</div>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
